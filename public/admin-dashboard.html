@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="admin-header">
+    <h2>DailyPortal - Admin Dashboard</h2>
+    <button onclick="logout()" class="btn-danger">Logout</button>
+  </div>
+
+  <div class="dashboard-container">
+
+    <div class="dashboard-card">
+      <h3>Add New Job</h3>
+      <form id="jobForm">
+        <input name="title" placeholder="Job Title" required>
+        <input name="company" placeholder="Company Name" required>
+        <input name="location" placeholder="Location" required>
+        <input name="salary" placeholder="Salary">
+        <input type="date" name="last_date" required>
+        <button class="btn-primary full-btn">Publish Job</button>
+      </form>
+    </div>
+
+    <div class="dashboard-card">
+      <h3>Manage Jobs</h3>
+      <div id="adminJobs" class="manage-scroll"></div>
+    </div>
+
+  </div>
+
+  <script>
+    if (!localStorage.getItem("adminLoggedIn")) {
+      window.location = "admin-login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location = "index.html";
+    }
+
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-US', {
+        day: '2-digit', month: 'short', year: 'numeric'
+      });
+    }
+
+    async function loadJobs() {
+      const r = await fetch("/jobs");
+      const jobs = await r.json();
+      const box = document.getElementById("adminJobs");
+      box.innerHTML = "";
+      jobs.forEach(j => {
+        box.innerHTML += `
+  <div class="manage-card">
+   <h4>${j.title}</h4>
+   <p><b>Company:</b> ${j.company}</p>
+   <p><b>Location:</b> ${j.location}</p>
+   <p><b>Salary:</b> ${j.salary || "Not Disclosed"}</p>
+   <p><b>Last Date:</b> ${formatDate(j.last_date)}</p>
+   <button onclick="deleteJob(${j.id})" class="btn-danger">Delete</button>
+  </div>`;
+      });
+    }
+
+    async function deleteJob(id) {
+      if (confirm("Delete this job?")) {
+        await fetch("/delete-job/" + id, { method: "DELETE" });
+        loadJobs();
+      }
+    }
+
+    jobForm.onsubmit = async e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(jobForm));
+      await fetch("/add-job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      jobForm.reset();
+      loadJobs();
+    };
+
+    loadJobs();
+  </script>
+
+</body>
+
+</html>

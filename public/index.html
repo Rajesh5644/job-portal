@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>DailyPortal - Jobs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="images/recruitment.png" alt="logo">
+        <span>DailyPortal</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" onclick="showAllJobs()">Home</a></li>
+        <li><a href="#jobs-section" onclick="showAllJobs()">Jobs</a></li>
+        <li><a href="#jobs-section" onclick="showSavedJobs()">Saved Jobs</a></li>
+        <li><a href="#about-section">About</a></li>
+      </ul>
+      <div class="menu-toggle" id="menuToggle">☰</div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <h1>Your Daily Source for <br><span>Jobs</span></h1>
+      <p>Discover verified opportunities and explore careers from top companies worldwide.</p>
+      <div class="hero-buttons">
+        <a href="#jobs-section">
+          <button class="btn-primary">Browse Jobs →</button>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOB SECTION -->
+  <section id="jobs-section">
+
+    <div class="filter-wrapper">
+      <div class="filter-group">
+        <input id="search" type="text" placeholder="🔎︎ Job Title">
+      </div>
+
+      <div class="filter-group">
+        <input id="locationFilter" type="text" placeholder="⚘ Location">
+      </div>
+
+
+      <div class="filter-buttons">
+        <button onclick="applyFilters()" class="btn-primary">Search</button>
+        <button onclick="resetFilters()" class="btn-reset">Reset</button>
+      </div>
+    </div>
+
+    <div id="jobs"></div>
+
+  </section>
+  <section id="about-section" class="about-section">
+    <div class="about-container">
+      <h2>About DailyPortal</h2>
+      <p>
+        DailyPortal is a modern job discovery platform designed to connect
+        talented individuals with the right career opportunities.
+        We simplify the job search process by providing updated listings,
+        smart filtering options, and a seamless user experience.
+      </p>
+
+      <p>
+        Our mission is to empower job seekers by making opportunities
+        accessible, organized, and easy to apply for — all in one place.
+      </p>
+
+      <div class="about-features">
+        <div class="feature-box">
+          ✔ Verified Job Listings
+        </div>
+        <div class="feature-box">
+          ✔ Easy Apply & Save Feature
+        </div>
+        <div class="feature-box">
+          ✔ Clean & Modern Interface
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="script.js"></script>
+  <script>
+
+    const toggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    const links = document.querySelectorAll(".nav-links a");
+
+    /* Toggle menu */
+    toggle.onclick = function () {
+      navLinks.classList.toggle("active");
+    };
+
+    /* Close menu when a link is clicked */
+    links.forEach(function (link) {
+      link.onclick = function () {
+        navLinks.classList.remove("active");
+      }
+    });
+
+  </script>
+
+</body>
+
+</html>
