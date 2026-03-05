@@ -2,7 +2,6 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const session = require("express-session");
-const multer = require("multer");
 const path = require("path");
 
 const app = express();
@@ -36,14 +35,7 @@ const db = new Pool({
 db.connect()
   .then(() => console.log("Supabase database connected"))
   .catch(err => console.error("Connection error", err));
-// FILE UPLOAD
-const storage = multer.diskStorage({
-  destination: "uploads",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-const upload = multer({ storage });
+
 
 // ADMIN LOGIN
 app.post("/admin-login", (req, res) => {
@@ -60,7 +52,7 @@ function checkAdmin(req, res, next) {
 }
 
 // ADD JOB
-app.post("/add-job", checkAdmin, upload.single("image"), (req, res) => {
+app.post("/add-job", checkAdmin, (req, res) => {
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
   const image = req.file ? "/uploads/" + req.file.filename : "";
 

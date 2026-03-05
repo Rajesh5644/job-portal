@@ -1,3 +1,4 @@
+const API = "https://job-portal.onrender.com";
 let allJobs = [];
 let currentView = "all";
 const jobsContainer = document.getElementById("jobs");
