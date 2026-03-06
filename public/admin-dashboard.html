@@ -36,12 +36,12 @@
 
   <script>
     if (!localStorage.getItem("adminLoggedIn")) {
-      window.location = "admin-login.html";
+      window.location.href = "admin-login.html";
     }
 
     function logout() {
       localStorage.removeItem("adminLoggedIn");
-      window.location = "index.html";
+      window.location.href = "index.html";
     }
 
     function formatDate(d) {
