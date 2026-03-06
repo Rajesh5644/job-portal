@@ -1,4 +1,4 @@
-const API = "https://job-portal.onrender.com";
+
 let allJobs = [];
 let currentView = "all";
 const jobsContainer = document.getElementById("jobs");
@@ -19,10 +19,11 @@ function formatDate(dateString) {
 }
 
 /* LOAD JOBS */
+const API = "https://job-portal-1-r80m.onrender.com";
 async function loadJobs() {
   try {
     showLoader();
-    const response = await fetch("/jobs");
+    const response = await fetch(API + "/jobs");
     const data = await response.json();
 
     const today = new Date();
