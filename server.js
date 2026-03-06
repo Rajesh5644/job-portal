@@ -54,7 +54,7 @@ function checkAdmin(req, res, next) {
 // ADD JOB
 app.post("/add-job", checkAdmin, (req, res) => {
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
-  const image = req.file ? "/uploads/" + req.file.filename : "";
+  const image = req.body.image || "";
 
   db.query(
     "INSERT INTO jobs(title,company,location,salary,description,apply_link,last_date,image) VALUES (?,?,?,?,?,?,?,?)",
