@@ -17,7 +17,7 @@
 
     <script>
         async function login() {
-            const r = await fetch("/admin-login", {
+            const r = await fetch("https://job-portal-1-r80m.onrender.com/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
