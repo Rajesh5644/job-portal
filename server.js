@@ -6,7 +6,10 @@ const path = require("path");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://job-portal99.netlify.app/', // allow only your frontend
+  credentials: true // if you are using cookies
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
