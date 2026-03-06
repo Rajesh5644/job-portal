@@ -7,7 +7,7 @@ const path = require("path");
 const app = express();
 
 app.use(cors({
-  origin: 'https://job-portal99.netlify.app/', // allow only your frontend
+  origin: 'https://job-portal99.netlify.app', // allow only your frontend
   credentials: true // if you are using cookies
 }));
 app.use(express.json());
@@ -18,7 +18,11 @@ app.use("/uploads", express.static("uploads"));
 app.use(session({
   secret: "job_secret_key",
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    secure: true,        // only works over HTTPS
+    sameSite: "none"     // allows cross-site cookies
+  }
 }));
 
 // DATABASE
