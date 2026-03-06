@@ -29,7 +29,7 @@
             const data = await r.json();
             if (data.ok) {
                 localStorage.setItem("adminLoggedIn", "true");
-                window.location.href = "admin-dashboard.html";
+                window.location.href = "/admin-dashboard.html";
             } else alert("Invalid Login");
         }
     </script>
