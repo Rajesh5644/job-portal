@@ -54,28 +54,29 @@ function checkAdmin(req, res, next) {
 // ADD JOB
 app.post("/add-job", checkAdmin, (req, res) => {
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
-  const image = req.body.image || "";
 
   db.query(
-    "INSERT INTO jobs(title,company,location,salary,description,apply_link,last_date,image) VALUES (?,?,?,?,?,?,?,?)",
-    [title, company, location, salary, description, apply_link, last_date, image],
-    () => res.json({ ok: true })
-  );
+    "INSERT INTO jobs(title,company,location,salary,description,apply_link,last_date) VALUES ($1,$2,$3,$4,$5,$6,$7)",
+    [title, company, location, salary, description, apply_link, last_date]
+  )
+    .then(() => res.json({ ok: true }))
+    .catch(err => res.json({ error: err }));
 });
 
 // GET JOBS (SHOW TODAY & FUTURE ONLY)
 app.get("/jobs", (req, res) => {
   db.query(
-    "SELECT * FROM jobs WHERE last_date >= CURDATE() ORDER BY last_date ASC",
-    (err, result) => res.json(result)
-  );
+    "SELECT * FROM jobs WHERE last_date >= CURRENT_DATE ORDER BY last_date ASC"
+  )
+    .then(result => res.json(result.rows))
+    .catch(err => res.json(err));
 });
 
 // DELETE
 app.delete("/delete-job/:id", checkAdmin, (req, res) => {
-  db.query("DELETE FROM jobs WHERE id=?", [req.params.id],
-    () => res.json({ ok: true })
-  );
+  db.query("DELETE FROM jobs WHERE id=$1", [req.params.id])
+    .then(() => res.json({ ok: true }))
+    .catch(err => res.json(err));
 });
 
 // UPDATE
@@ -83,10 +84,11 @@ app.put("/update-job/:id", checkAdmin, (req, res) => {
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
 
   db.query(
-    "UPDATE jobs SET title=?,company=?,location=?,salary=?,description=?,apply_link=?,last_date=? WHERE id=?",
-    [title, company, location, salary, description, apply_link, last_date, req.params.id],
-    () => res.json({ ok: true })
-  );
+    "UPDATE jobs SET title=$1,company=$2,location=$3,salary=$4,description=$5,apply_link=$6,last_date=$7 WHERE id=$8",
+    [title, company, location, salary, description, apply_link, last_date, req.params.id]
+  )
+    .then(() => res.json({ ok: true }))
+    .catch(err => res.json(err));
 });
 
 const PORT = process.env.PORT || 5000;
