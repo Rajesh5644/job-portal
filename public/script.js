@@ -22,7 +22,16 @@ function formatDate(dateString) {
 const API = "https://job-portal-1-r80m.onrender.com";
 async function loadJobs() {
   try {
+
     showLoader();
+
+    // Show cached jobs first (for fast loading)
+    const cached = localStorage.getItem("jobs");
+    if (cached) {
+      const cachedJobs = JSON.parse(cached);
+      render(cachedJobs);
+    }
+
     const response = await fetch(API + "/jobs");
     const data = await response.json();
 
@@ -30,19 +39,28 @@ async function loadJobs() {
     today.setHours(0, 0, 0, 0);
 
     // Remove expired jobs automatically
-    allJobs = data.filter((job) => {
+    allJobs = (data || []).filter((job) => {
+      if (!job.last_date) return true;
+
       const lastDate = new Date(job.last_date);
       lastDate.setHours(0, 0, 0, 0);
+
       return lastDate >= today;
     });
 
+    // Save latest jobs to cache
+    localStorage.setItem("jobs", JSON.stringify(allJobs));
+
     render(allJobs);
+
   } catch (error) {
+
+    console.error(error);
+
     jobsContainer.innerHTML =
-      "<div class='loader'>Failed to load jobs</div>";
+      "<div class='loader'>Server waking up... please wait</div>";
   }
 }
-
 /* RENDER JOBS */
 function render(list) {
   jobsContainer.innerHTML = "";
