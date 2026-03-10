@@ -35,6 +35,9 @@
   </div>
 
   <script>
+
+    const API = "https://job-portal-1-r80m.onrender.com";
+
     if (!localStorage.getItem("adminLoggedIn")) {
       window.location.href = "admin-login.html";
     }
@@ -51,10 +54,12 @@
     }
 
     async function loadJobs() {
-      const r = await fetch("/jobs");
+      const r = await fetch(API + "/jobs");
       const jobs = await r.json();
+
       const box = document.getElementById("adminJobs");
       box.innerHTML = "";
+
       jobs.forEach(j => {
         box.innerHTML += `
   <div class="manage-card">
@@ -70,24 +75,33 @@
 
     async function deleteJob(id) {
       if (confirm("Delete this job?")) {
-        await fetch("/delete-job/" + id, { method: "DELETE" });
+        await fetch(API + "/delete-job/" + id, {
+          method: "DELETE",
+          credentials: "include"
+        });
         loadJobs();
       }
     }
 
+    const jobForm = document.getElementById("jobForm");
+
     jobForm.onsubmit = async e => {
       e.preventDefault();
       const data = Object.fromEntries(new FormData(jobForm));
-      await fetch("/add-job", {
+
+      await fetch(API + "/add-job", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(data)
       });
+
       jobForm.reset();
       loadJobs();
     };
 
     loadJobs();
+
   </script>
 
 </body>
