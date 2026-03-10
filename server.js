@@ -28,15 +28,11 @@ app.use(session({
 // DATABASE
 const { Pool } = require("pg");
 
+const { Pool } = require("pg");
+
 const db = new Pool({
-  host: "db.poffjsqulmrqzsgfqxnu.supabase.co",
-  user: "postgres",
-  password: "Database@1234564",
-  database: "postgres",
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 db.connect()
