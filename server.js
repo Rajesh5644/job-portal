@@ -65,7 +65,10 @@ app.post("/add-job", (req, res) => {
     [title, company, location, salary, description, apply_link, last_date]
   )
     .then(() => res.json({ ok: true }))
-    .catch(err => res.json(err));
+    .catch(err => {
+      console.log(err);
+      res.json(err);
+    });
 
 });
 
@@ -79,12 +82,17 @@ app.get("/jobs", (req, res) => {
 });
 
 // DELETE
-app.delete("/delete-job/:id", checkAdmin, (req, res) => {
+app.delete("/delete-job/:id", (req, res) => {
+
+  if (req.headers.admin_key !== "123456") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   db.query("DELETE FROM jobs WHERE id=$1", [req.params.id])
     .then(() => res.json({ ok: true }))
     .catch(err => res.json(err));
-});
 
+});
 // UPDATE
 app.put("/update-job/:id", checkAdmin, (req, res) => {
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
