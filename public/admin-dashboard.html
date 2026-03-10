@@ -16,52 +16,63 @@
   <div class="dashboard-container">
 
     <div class="dashboard-card">
-      <h3>Add New Job</h3>
       <form id="jobForm">
+
         <input name="title" placeholder="Job Title" required>
+
         <input name="company" placeholder="Company Name" required>
+
         <input name="location" placeholder="Location" required>
+
         <input name="salary" placeholder="Salary">
+
+        <input name="apply_link" placeholder="Apply Link">
+
+        <textarea name="description" placeholder="Job Description"></textarea>
+
         <input type="date" name="last_date" required>
-        <button class="btn-primary full-btn">Publish Job</button>
+
+        <button class="btn-primary full-btn">
+          Publish Job
+        </button>
+
       </form>
+
+      <div class="dashboard-card">
+        <h3>Manage Jobs</h3>
+        <div id="adminJobs" class="manage-scroll"></div>
+      </div>
+
     </div>
 
-    <div class="dashboard-card">
-      <h3>Manage Jobs</h3>
-      <div id="adminJobs" class="manage-scroll"></div>
-    </div>
+    <script>
 
-  </div>
+      const API = "https://job-portal-1-r80m.onrender.com";
 
-  <script>
+      if (!localStorage.getItem("adminLoggedIn")) {
+        window.location.href = "admin-login.html";
+      }
 
-    const API = "https://job-portal-1-r80m.onrender.com";
+      function logout() {
+        localStorage.removeItem("adminLoggedIn");
+        window.location.href = "index.html";
+      }
 
-    if (!localStorage.getItem("adminLoggedIn")) {
-      window.location.href = "admin-login.html";
-    }
+      function formatDate(d) {
+        return new Date(d).toLocaleDateString('en-US', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+      }
 
-    function logout() {
-      localStorage.removeItem("adminLoggedIn");
-      window.location.href = "index.html";
-    }
+      async function loadJobs() {
+        const r = await fetch(API + "/jobs");
+        const jobs = await r.json();
 
-    function formatDate(d) {
-      return new Date(d).toLocaleDateString('en-US', {
-        day: '2-digit', month: 'short', year: 'numeric'
-      });
-    }
+        const box = document.getElementById("adminJobs");
+        box.innerHTML = "";
 
-    async function loadJobs() {
-      const r = await fetch(API + "/jobs");
-      const jobs = await r.json();
-
-      const box = document.getElementById("adminJobs");
-      box.innerHTML = "";
-
-      jobs.forEach(j => {
-        box.innerHTML += `
+        jobs.forEach(j => {
+          box.innerHTML += `
   <div class="manage-card">
    <h4>${j.title}</h4>
    <p><b>Company:</b> ${j.company}</p>
@@ -70,39 +81,43 @@
    <p><b>Last Date:</b> ${formatDate(j.last_date)}</p>
    <button onclick="deleteJob(${j.id})" class="btn-danger">Delete</button>
   </div>`;
-      });
-    }
-
-    async function deleteJob(id) {
-      if (confirm("Delete this job?")) {
-        await fetch(API + "/delete-job/" + id, {
-          method: "DELETE",
-          credentials: "include"
         });
-        loadJobs();
       }
-    }
 
-    const jobForm = document.getElementById("jobForm");
+      async function deleteJob(id) {
+        if (confirm("Delete this job?")) {
+          await fetch(API + "/delete-job/" + id, {
+            method: "DELETE",
+            headers: {
+              "admin_key": "123456"
+            }
+          });
+          loadJobs();
+        }
+      }
 
-    jobForm.onsubmit = async e => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(jobForm));
+      const jobForm = document.getElementById("jobForm");
 
-      await fetch(API + "/add-job", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(data)
-      });
+      jobForm.onsubmit = async e => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(jobForm));
 
-      jobForm.reset();
+        await fetch(API + "/add-job", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "admin_key": "123456"
+          },
+          body: JSON.stringify(data)
+        });
+
+        jobForm.reset();
+        loadJobs();
+      };
+
       loadJobs();
-    };
 
-    loadJobs();
-
-  </script>
+    </script>
 
 </body>
 

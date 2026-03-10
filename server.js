@@ -52,7 +52,12 @@ function checkAdmin(req, res, next) {
 }
 
 // ADD JOB
-app.post("/add-job", checkAdmin, (req, res) => {
+app.post("/add-job", (req, res) => {
+
+  if (req.headers.admin_key !== "123456") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const { title, company, location, salary, description, apply_link, last_date } = req.body;
 
   db.query(
@@ -60,7 +65,8 @@ app.post("/add-job", checkAdmin, (req, res) => {
     [title, company, location, salary, description, apply_link, last_date]
   )
     .then(() => res.json({ ok: true }))
-    .catch(err => res.json({ error: err }));
+    .catch(err => res.json(err));
+
 });
 
 // GET JOBS (SHOW TODAY & FUTURE ONLY)
